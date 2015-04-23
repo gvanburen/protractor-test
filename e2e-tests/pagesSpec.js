@@ -48,6 +48,7 @@ describe("Test Pages", function() {
     createUrlEntry("url two", "http://url-two.com");
     createUrlEntry("url three", "http://url-three.com");
 
+
     browser.get(ROOT + "/");
     expect(element.all(by.css('.url-listing')).count()).toBe(3);
 
@@ -57,4 +58,39 @@ describe("Test Pages", function() {
     browser.get(ROOT + "/?q=x");
     expect(element.all(by.css('.url-listing')).count()).toBe(0);
   });
+  
+  it('should delete a URL in the listing', function(){
+    createUrlEntry("testing", "http://testing-url.com");
+    var btn = element(by.css('.btn-danger'));
+    
+    browser.get(ROOT + "/");
+    //how do i specify a url if there is more than one?
+
+    btn.click();
+    
+    expect(element.all(by.css('.url-listing')).count()).toBe(0);
+    
+
+  });
+
+  it ('should edit the link of the URL in the listing', function(){
+    createUrlEntry("edit-me", "http://my-url.com");
+    var btn = element(by.css('.btn-primary'));
+    var newTitle = "this-is-my-new-title";
+
+    browser.get(ROOT + "/");
+    btn.click();
+    element(by.model('formCtrl.form.title')).clear();
+    element(by.model('formCtrl.form.title')).sendKeys(newTitle);
+    element(by.css('input[type=submit]')).click();
+
+    browser.get(ROOT + "/?q=new");
+    expect(element.all(by.css('.url-listing')).count()).toBe(1);
+
+    browser.get(ROOT + "/?q=edit");
+    expect(element.all(by.css('.url-listing')).count()).toBe(0);
+
+  });
+
+
 });
